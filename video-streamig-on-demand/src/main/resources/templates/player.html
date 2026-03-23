@@ -1,0 +1,65 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Video Streaming Player</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #111;
+            color: white;
+            text-align: center;
+        }
+
+        video {
+            margin-top: 20px;
+            width: 70%;
+            background: black;
+        }
+    </style>
+</head>
+<body>
+
+<h1>🎬 HLS Video Streaming</h1>
+
+<video id="videoPlayer" controls></video>
+
+<script th:inline="javascript">
+
+const videoSrc = '[[${hlsUrl}]]';
+
+    console.log("Video URL from backend:", videoSrc);
+
+    const video = document.getElementById('videoPlayer');
+
+    if (!videoSrc) {
+        alert("No video URL provided!");
+    }
+
+    if (Hls.isSupported()) {
+
+        const hls = new Hls({ debug: true });
+
+        hls.loadSource(videoSrc);
+        hls.attachMedia(video);
+
+        hls.on(Hls.Events.MANIFEST_PARSED, function () {
+            console.log("Manifest loaded ✅");
+            video.play();
+        });
+
+        hls.on(Hls.Events.ERROR, function (event, data) {
+            console.error("HLS ERROR ❌:", data);
+        });
+
+    } else {
+        alert("HLS not supported");
+    }
+
+</script>
+
+</body>
+</html>
